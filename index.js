@@ -1,0 +1,15 @@
+const app = require("./loader/app");
+const { SERVER } = require("./config");
+
+app
+  .listen(SERVER.PORT, () => {
+    console.log(`
+      ################################################
+        🛡️  Server listening on port: ${SERVER.PORT} 🛡️
+      ################################################`);
+  })
+  .on("error", (err) => {
+    console.error("Internal Server Error");
+    console.error(err.message);
+    process.exit(1);
+  });

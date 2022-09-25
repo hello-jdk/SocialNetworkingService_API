@@ -19,7 +19,7 @@ module.exports = function (sequelize) {
       },
     },
     //option
-    { charset: "utf8mb4", collate: "utf8mb4_general_ci" }
+    { charset: "utf8mb4", collate: "utf8mb4_general_ci", freezeTableName: true }
   );
 
   return User;

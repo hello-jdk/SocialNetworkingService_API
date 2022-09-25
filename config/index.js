@@ -12,4 +12,15 @@ const MYSQL = {
   DIALECT: "mysql",
 };
 
-module.exports = { SERVER, MYSQL };
+const JWT = {
+  secretKey: process.env.JWT_SECRETKEY,
+  option: {
+    algorithm: "HS256",
+    expiresIn: "30m",
+    issuer: "jdk",
+  },
+  TOKEN_EXPIRED: -3,
+  TOKEN_INVALID: -2,
+};
+
+module.exports = { SERVER, MYSQL, JWT };

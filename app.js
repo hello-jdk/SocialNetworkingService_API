@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 ////Router
-app.use("api", router);
+app.use("/api", router);
 
 ////Error Handler
 const { StatusCodes, getReasonPhrase } = require("http-status-codes");
@@ -38,7 +38,7 @@ app.use(errorLogger);
 app.use(errorResponser);
 
 const { sequelize } = require("./models");
-sequelize.sync({ force: false, alter: false }).catch((error) => {
+sequelize.sync({ force: true, alter: true }).catch((error) => {
   console.error(error);
   process.exit(1);
 });

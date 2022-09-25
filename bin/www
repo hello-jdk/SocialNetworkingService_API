@@ -1,5 +1,5 @@
-const app = require("./loader/app");
-const { SERVER } = require("./config");
+const app = require("../app");
+const { SERVER } = require("../config");
 
 app
   .listen(SERVER.PORT, () => {

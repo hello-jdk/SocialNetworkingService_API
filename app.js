@@ -1,7 +1,7 @@
 const express = require("express");
 const logger = require("morgan");
 const app = express();
-const { router } = require("../api/router");
+const { router } = require("./api/router");
 
 app.use(logger("dev"));
 
@@ -37,7 +37,7 @@ const errorResponser = (err, req, res, next) => {
 app.use(errorLogger);
 app.use(errorResponser);
 
-const { sequelize } = require("../models");
+const { sequelize } = require("./models");
 sequelize.sync({ force: false, alter: false }).catch((error) => {
   console.error(error);
   process.exit(1);

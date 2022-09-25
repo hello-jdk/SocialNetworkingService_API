@@ -11,4 +11,14 @@ async function signUp(req, res, next) {
   }
 }
 
-module.exports = { signUp };
+async function login(req, res, next) {
+  const user = req.body;
+  try {
+    const token = await userService.creatToken(user);
+    return res.status(StatusCodes.OK).json(token);
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { signUp, login };

@@ -14,4 +14,13 @@ async function createByEamil(email) {
   }
 }
 
-module.exports = { createByEamil };
+async function findOneByEamil(email) {
+  try {
+    const user = await userModel.findOne({ where: { email } });
+    return user;
+  } catch (error) {
+    throw new Error("findOneByEamil error");
+  }
+}
+
+module.exports = { createByEamil, findOneByEamil };

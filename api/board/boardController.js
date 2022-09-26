@@ -12,6 +12,17 @@ async function create(req, res, next) {
 }
 async function update(req, res, next) {}
 async function destroy(req, res, next) {}
-async function selectOne(req, res, next) {}
+async function selectOne(req, res, next) {
+  console.log("selectOne");
+}
+async function checkLike(req, res, next) {
+  console.log("heart");
+}
 
-module.exports = { selectOne, create, update, destroy };
+module.exports = {
+  selectOne,
+  create,
+  update,
+  destroy,
+  checkLike,
+};

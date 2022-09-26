@@ -25,4 +25,7 @@ async function findOneByEamil(email) {
   }
 }
 
-module.exports = { createByEamil, findOneByEamil };
+module.exports = {
+  createByEamil,
+  findOneByEamil,
+};

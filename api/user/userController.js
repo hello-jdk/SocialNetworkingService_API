@@ -23,4 +23,7 @@ async function login(req, res, next) {
   }
 }
 
-module.exports = { signUp, login };
+module.exports = {
+  signUp,
+  login,
+};

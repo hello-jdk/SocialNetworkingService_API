@@ -20,4 +20,7 @@ async function creatToken(user) {
   return token;
 }
 
-module.exports = { createUser, creatToken };
+module.exports = {
+  createUser,
+  creatToken,
+};

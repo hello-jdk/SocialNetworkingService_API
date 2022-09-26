@@ -21,12 +21,12 @@ module.exports = {
   verify: async (token) => {
     let decoded;
     try {
-      decoded = jwt.verify(token, secretKey);
+      decoded = jwt.verify(token, jwtConfig.secretKey);
     } catch (error) {
-      if (err.message === "jwt expired") {
+      if (error.message === "jwt expired") {
         console.log("[JWT] : expired token");
         return TOKEN_EXPIRED;
-      } else if (err.message === "invalid token") {
+      } else if (error.message === "invalid token") {
         console.log("[JWT] : invalid token");
         console.log(TOKEN_INVALID);
         return TOKEN_INVALID;

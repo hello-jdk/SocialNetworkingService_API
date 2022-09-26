@@ -12,7 +12,6 @@ async function createUser(user) {
 async function creatToken(user) {
   const email = user.email;
   const validedUser = await userDAO.findOneByEamil(email);
-  console.log(validedUser);
   if (!validedUser) {
     throw new BadRequestError("이메일 없음");
   }

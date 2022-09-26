@@ -1,4 +1,5 @@
 const { boardModel, hashTagModel, sequelize } = require("../../models");
+const { BadRequestError } = require("../../modules/error");
 
 async function create(board) {
   //트랜잭션
@@ -41,4 +42,29 @@ async function create(board) {
   }
 }
 
-module.exports = { create };
+async function findOneById(id) {
+  const t = await sequelize.transaction();
+  const boardExist = await boardModel.findByPk(id, { transaction: t });
+  if (!boardExist) {
+    throw new BadRequestError("게시글이 존재하지 않습니다.");
+  }
+
+  try {
+    const board = boardExist;
+    const viewCount = board.viewCount + 1;
+    await boardModel.update({ viewCount }, { where: { id }, transaction: t });
+    board.viewCount++;
+
+    t.commit();
+    const updatedBaord = board;
+    return updatedBaord;
+  } catch (error) {
+    t.rollback();
+    throw new Error("findOneById 에러");
+  }
+}
+
+module.exports = {
+  create,
+  findOneById,
+};

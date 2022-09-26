@@ -4,4 +4,11 @@ async function createBoard(board) {
   await boardDAO.create(board);
 }
 
-module.exports = { createBoard };
+async function selectBoard(id) {
+  return await boardDAO.findOneById(id);
+}
+
+module.exports = {
+  createBoard,
+  selectBoard,
+};

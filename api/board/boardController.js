@@ -10,14 +10,20 @@ async function create(req, res, next) {
     next(error);
   }
 }
-async function update(req, res, next) {}
-async function destroy(req, res, next) {}
 async function selectOne(req, res, next) {
-  console.log("selectOne");
+  const id = req.params.id;
+  try {
+    const board = await boardSerivce.selectBoard(id);
+    return res.status(StatusCodes.OK).json(board);
+  } catch (error) {
+    next(error);
+  }
 }
 async function checkLike(req, res, next) {
   console.log("heart");
 }
+async function update(req, res, next) {}
+async function destroy(req, res, next) {}
 
 module.exports = {
   selectOne,

@@ -21,8 +21,12 @@ module.exports = function (sequelize) {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      hashTags: {
+      hashTag: {
         type: DataTypes.STRING,
+      },
+      viewCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
       },
       likeCount: {
         type: DataTypes.INTEGER,

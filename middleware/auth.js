@@ -23,7 +23,7 @@ const authUtil = {
     if (user.id === undefined) {
       throw new UnauthorizedError("유저 정보가 일치하지 않습니다.");
     }
-    req.body.userEmail = user.email;
+    req.body.user = user;
     next();
   },
 };

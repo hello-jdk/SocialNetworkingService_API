@@ -32,6 +32,9 @@ module.exports = function (sequelize) {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      likeUserId: {
+        type: DataTypes.STRING,
+      },
     },
     { charset: "utf8mb4", collate: "utf8mb4_general_ci", paranoid: true, freezeTableName: true }
   );

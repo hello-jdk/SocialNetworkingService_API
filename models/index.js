@@ -11,6 +11,7 @@ const sequelize = new Sequelize(MYSQL.DATABASE, MYSQL.USERNAME, MYSQL.PASSWORD, 
 //모델 정의
 const userModel = require("./userModel")(sequelize);
 const boardModel = require("./boardModel")(sequelize);
+const hashTagModel = require("./hashtagModel")(sequelize);
 
 //관계성 정의
 Object.values(sequelize.models).forEach((model) => {
@@ -19,4 +20,4 @@ Object.values(sequelize.models).forEach((model) => {
   }
 });
 
-module.exports = { sequelize, userModel, boardModel };
+module.exports = { sequelize, userModel, boardModel, hashTagModel };

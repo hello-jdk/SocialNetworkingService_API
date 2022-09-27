@@ -1,6 +1,7 @@
 const userService = require("./userService");
 const { StatusCodes } = require("http-status-codes");
 
+//회원가입
 async function signUp(req, res, next) {
   const user = req.body;
   try {
@@ -11,6 +12,7 @@ async function signUp(req, res, next) {
   }
 }
 
+//로그인
 async function login(req, res, next) {
   const user = req.body;
   try {
@@ -21,4 +23,7 @@ async function login(req, res, next) {
   }
 }
 
-module.exports = { signUp, login };
+module.exports = {
+  signUp,
+  login,
+};

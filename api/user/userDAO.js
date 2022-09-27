@@ -1,6 +1,7 @@
 const { userModel } = require("../../models/index");
 const { ConflictError } = require("../../modules/error");
 
+//이메일로 유저생성
 async function createByEamil(email) {
   try {
     const newUser = await userModel.create({ email });
@@ -14,6 +15,7 @@ async function createByEamil(email) {
   }
 }
 
+//이메일로 유저조회
 async function findOneByEamil(email) {
   try {
     const user = await userModel.findOne({ where: { email } });
@@ -23,4 +25,7 @@ async function findOneByEamil(email) {
   }
 }
 
-module.exports = { createByEamil, findOneByEamil };
+module.exports = {
+  createByEamil,
+  findOneByEamil,
+};

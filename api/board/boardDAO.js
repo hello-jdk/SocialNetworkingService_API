@@ -38,7 +38,7 @@ async function create(board) {
     t.commit();
   } catch (error) {
     t.rollback();
-    throw Error("board create 에러");
+    throw new Error("board create 에러");
   }
 }
 
@@ -60,11 +60,62 @@ async function findOneById(id) {
     return updatedBaord;
   } catch (error) {
     t.rollback();
-    throw new Error("findOneById 에러");
+    if (!error.isCustom) {
+      throw new Error("findOneById 에러");
+    }
+  }
+}
+
+async function updateLike(userId, boardId) {
+  const t = await sequelize.transaction();
+  let boardExist = await boardModel.findByPk(boardId, { raw: true, transaction: t });
+  if (!boardExist) {
+    throw new BadRequestError("게시글이 존재하지 않습니다.");
+  }
+
+  try {
+    let board = boardExist;
+    let likeListString = board.likeUserId;
+    let likeListArr = [];
+    if (likeListString == null || likeListString == "") {
+      likeListString = "";
+    } else {
+      likeListArr = likeListString.split(",");
+    }
+    let likeFlag = true;
+
+    for (let i = 0; i < likeListArr.length; i++) {
+      if (likeListArr[i] == userId) {
+        likeListArr.splice(i, 1);
+        likeFlag = false;
+        board.likeCount = board.likeCount - 1;
+        break;
+      }
+    }
+
+    if (likeFlag) {
+      likeListArr.push(userId);
+      board.likeCount = board.likeCount + 1;
+    }
+
+    likeListString = likeListArr.toString();
+    board.likeUserId = likeListString;
+
+    await boardModel.update(board, {
+      where: { id: board.id },
+      transaction: t,
+    });
+
+    t.commit();
+    return board;
+  } catch (error) {
+    t.rollback();
+    throw new Error("updateLike 에러");
   }
 }
 
 module.exports = {
   create,
   findOneById,
+  updateLike,
 };

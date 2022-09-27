@@ -8,7 +8,7 @@ router.post("/users/login", userController.login);
 
 router.post("/boards", auth.checkToken, boardController.create);
 router.get("/boards/:id", boardController.selectOne);
-router.get("/boards/:id/:heart", boardController.checkLike);
+router.get("/boards/:id/:heart", auth.checkToken, boardController.clickLike);
 router.put("/boards", boardController.update);
 router.delete("/boards", boardController.destroy);
 

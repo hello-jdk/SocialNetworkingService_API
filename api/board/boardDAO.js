@@ -1,5 +1,6 @@
 const { boardModel, hashTagModel, sequelize } = require("../../models");
-const { BadRequestError } = require("../../modules/error");
+const hashtagModel = require("../../models/hashtagModel");
+const { BadRequestError, ForbiddenError, BasicError } = require("../../modules/error");
 
 async function create(board) {
   //트랜잭션
@@ -114,8 +115,79 @@ async function updateLike(userId, boardId) {
   }
 }
 
+async function destroy(boardId, userEmail) {
+  const t = await sequelize.transaction();
+
+  let boardExist = await boardModel.findByPk(boardId, { raw: true });
+  if (!boardExist) {
+    throw new BadRequestError("게시글이 존재하지 않습니다.");
+  }
+
+  const board = boardExist;
+  const boardAthor = board.userEmail;
+  if (boardAthor != userEmail) {
+    throw new ForbiddenError("게시글은 본인만 지울수있습니다.");
+  }
+
+  try {
+    ////해시태그 제거
+    //게시글에 있는 해시태그 데이터
+    const boardHashTagString = board.hashTag;
+    const boardHashTagArr = boardHashTagString.split(",");
+
+    //해시태그 이름으로 찾기
+    for (const hashTagName of boardHashTagArr) {
+      const hashTagRow = await hashTagModel.findOne({
+        where: { name: hashTagName },
+        transaction: t,
+        raw: true,
+      });
+
+      //해당 해시태그 데이터에서 게시글 제거
+      const hashTagboardIdString = hashTagRow.boardId;
+      const hashTagboardIdArr = hashTagboardIdString.split(",");
+
+      const updatedHashTagBaordId = await hashTagboardIdArr
+        .filter((targetId) => targetId != boardId)
+        .toString();
+
+      if (updatedHashTagBaordId == "") {
+        await hashTagModel.destroy({
+          where: { id: hashTagRow.id },
+          transaction: t,
+        });
+      } else {
+        await hashTagModel.update(
+          { boardId: updatedHashTagBaordId },
+          {
+            where: { id: hashTagRow.id },
+            transaction: t,
+          }
+        );
+      }
+    }
+
+    ////게시글 제거
+    const deletedRowNum = await boardModel.destroy({
+      where: { id: boardId },
+      transaction: t,
+    });
+
+    if (deletedRowNum != 1) {
+      throw new BasicError("board destroy", "게시글이 존재하고 본인이지만 지워지지 않음", 500);
+    }
+
+    t.commit();
+  } catch (error) {
+    console.log(error.message);
+    t.rollback();
+    throw new Error("destroy 에러");
+  }
+}
+
 module.exports = {
   create,
   findOneById,
   updateLike,
+  destroy,
 };

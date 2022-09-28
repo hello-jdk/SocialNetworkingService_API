@@ -12,8 +12,13 @@ async function clickLike(userId, boardId) {
   return await boardDAO.updateLike(userId, boardId);
 }
 
+async function deleteBoard(boardId, userEmail) {
+  return await boardDAO.destroy(boardId, userEmail);
+}
+
 module.exports = {
   createBoard,
   selectBoard,
   clickLike,
+  deleteBoard,
 };

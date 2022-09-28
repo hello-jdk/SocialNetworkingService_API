@@ -34,7 +34,19 @@ async function clickLike(req, res, next) {
   }
 }
 async function update(req, res, next) {}
-async function destroy(req, res, next) {}
+async function destroy(req, res, next) {
+  try {
+    const boardId = req.params.id;
+
+    const user = req.body.user;
+    const userEmail = user?.email;
+
+    await boardSerivce.deleteBoard(boardId, userEmail);
+    return res.status(StatusCodes.NO_CONTENT).send();
+  } catch (error) {
+    next(error);
+  }
+}
 
 module.exports = {
   selectOne,

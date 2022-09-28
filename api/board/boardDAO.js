@@ -192,6 +192,31 @@ async function update(board) {
     throw new Error("update 에러");
   }
 }
+async function findeAllByCreated(articleCnt, page) {
+  return await boardModel.findAll({
+    order: [["createdAt", "DESC"]],
+    offset: articleCnt * (page - 1),
+    limit: articleCnt,
+    raw: true,
+  });
+}
+
+async function findAllByViewCount(articleCnt, page) {
+  return await boardModel.findAll({
+    order: [["viewCount", "DESC"]],
+    offset: articleCnt * (page - 1),
+    limit: articleCnt,
+    raw: true,
+  });
+}
+async function findeAllByLikeCount(articleCnt, page) {
+  return await boardModel.findAll({
+    order: [["likeCount", "DESC"]],
+    offset: articleCnt * (page - 1),
+    limit: articleCnt,
+    raw: true,
+  });
+}
 
 module.exports = {
   create,
@@ -199,4 +224,7 @@ module.exports = {
   updateLike,
   destroy,
   update,
+  findeAllByCreated,
+  findAllByViewCount,
+  findeAllByLikeCount,
 };

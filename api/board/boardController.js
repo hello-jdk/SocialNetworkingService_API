@@ -70,10 +70,28 @@ async function destroy(req, res, next) {
   }
 }
 
+async function selectAll(req, res, next) {
+  const orderby = req.query.orderby || "작성일";
+  const articleCnt = Number(req.query.articleCnt) || 10;
+  const page = Number(req.query.page) || 1;
+  const search = req.query.search || false;
+  const hashtag = req.query.hashtag || false;
+
+  try {
+    const data = await boardSerivce.selectAllBoards(orderby, articleCnt, page, search, hashtag);
+    return res.status(StatusCodes.OK).json(data);
+  } catch (error) {
+    next(error);
+  }
+
+  console.log(orderby, articleCnt, page, search, hashtag);
+}
+
 module.exports = {
   selectOne,
   create,
   update,
   destroy,
   clickLike,
+  selectAll,
 };

@@ -12,6 +12,6 @@ router.get("/boards/:id/:heart", auth.checkToken, boardController.clickLike);
 router.put("/boards", auth.checkToken, boardController.update);
 router.delete("/boards/:id", auth.checkToken, boardController.destroy);
 
-//router.get("/boards/list")
+router.get("/boards", boardController.selectAll);
 
 module.exports = { router };

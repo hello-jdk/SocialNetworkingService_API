@@ -9,7 +9,7 @@ router.post("/users/login", userController.login);
 router.post("/boards", auth.checkToken, boardController.create);
 router.get("/boards/:id", boardController.selectOne);
 router.get("/boards/:id/:heart", auth.checkToken, boardController.clickLike);
-router.put("/boards", boardController.update);
+router.put("/boards", auth.checkToken, boardController.update);
 router.delete("/boards/:id", auth.checkToken, boardController.destroy);
 
 //router.get("/boards/list")

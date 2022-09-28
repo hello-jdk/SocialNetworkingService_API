@@ -16,9 +16,14 @@ async function deleteBoard(boardId, userEmail) {
   return await boardDAO.destroy(boardId, userEmail);
 }
 
+async function updateBoard(board) {
+  return await boardDAO.update(board);
+}
+
 module.exports = {
   createBoard,
   selectBoard,
   clickLike,
   deleteBoard,
+  updateBoard,
 };

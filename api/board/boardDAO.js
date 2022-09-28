@@ -185,9 +185,18 @@ async function destroy(boardId, userEmail) {
   }
 }
 
+async function update(board) {
+  try {
+    await boardModel.update(board, { where: { id: board.id } });
+  } catch (error) {
+    throw new Error("update 에러");
+  }
+}
+
 module.exports = {
   create,
   findOneById,
   updateLike,
   destroy,
+  update,
 };

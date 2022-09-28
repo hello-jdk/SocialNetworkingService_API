@@ -1,5 +1,6 @@
 const boardSerivce = require("./boardService");
 const { StatusCodes } = require("http-status-codes");
+const { BadRequestError } = require("../../modules/error");
 
 async function create(req, res, next) {
   const board = req.body;
@@ -33,7 +34,28 @@ async function clickLike(req, res, next) {
     next(error);
   }
 }
-async function update(req, res, next) {}
+async function update(req, res, next) {
+  try {
+    const { id, userEmail, title, contents, hashTag } = req.body;
+    const board = {
+      id: id,
+      userEmail: userEmail,
+      title: title,
+      contents: contents,
+      hashTag: hashTag,
+    };
+    const user = req.body.user;
+
+    if (userEmail != user.email) {
+      throw new BadRequestError("본인만 수정할수있습니다.");
+    }
+
+    await boardSerivce.updateBoard(board, user);
+    return res.status(StatusCodes.OK).json({ message: "board Updated" });
+  } catch (error) {
+    next(error);
+  }
+}
 async function destroy(req, res, next) {
   try {
     const boardId = req.params.id;
@@ -42,7 +64,7 @@ async function destroy(req, res, next) {
     const userEmail = user?.email;
 
     await boardSerivce.deleteBoard(boardId, userEmail);
-    return res.status(StatusCodes.NO_CONTENT).send();
+    return res.status(StatusCodes.OK).json({ message: "board Deleted" });
   } catch (error) {
     next(error);
   }

@@ -38,7 +38,7 @@ app.use(errorLogger);
 app.use(errorResponser);
 
 const { sequelize } = require("./models");
-sequelize.sync({ force: true, alter: true }).catch((error) => {
+sequelize.sync({ force: false, alter: true }).catch((error) => {
   console.error(error);
   process.exit(1);
 });

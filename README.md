@@ -33,7 +33,33 @@ TODO: dbdiagram.io
 ### Directory Structure
 
 ```
-TODO: Tree Structure
+SocialNetworkingService_API
+├─ bin
+│  └─ www
+├─ config
+│  └─ index.js
+├─ models
+│  ├─ index.js
+│  ├─ boardModel.js
+│  ├─ hashtagModel.js
+│  └─ userModel.js
+├─ api
+│  ├─ router.js
+│  ├─ board
+│  │  ├─ boardController.js
+│  │  ├─ boardDAO.js
+│  │  └─ boardService.js
+│  └─ user
+│     ├─ userController.js
+│     ├─ userDAO.js
+│     └─ userService.js
+├─ middleware
+│  └─ auth.js
+├─ modules
+│  ├─ error.js
+│  └─ jwt.js
+├─ app.js
+└─ README.md
 ```
 
 ## 2. How To Use
@@ -45,12 +71,19 @@ npm start
 
 ### API DOCS
 
-TODO: POSTMAN API DOCS 링크
+https://documenter.getpostman.com/view/22649152/2s83mdLjev
 
 ### Preferences(.env)
 
 ```
-TODO: (.env)
+PORT =
+
+DB_HOST=
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
+
+JWT_SECRETKEY=
 ```
 
 ## 3. Convention

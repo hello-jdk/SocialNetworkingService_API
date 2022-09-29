@@ -2,13 +2,15 @@
 
 Social Networking Service REST API Server
 
+- [작업일지](https://physicsbackend.notion.site/5-421447b7293148e08283b64789fd5c55)
+
 ## 목차
 
 1. [개요](#1-개요)
 2. [How To Use](#2-how-to-use)
 3. [Convention](#3-convention)
 
-`22.09.23 ~ 22.09.`
+`22.09.23 ~ 22.09.29`
 
 ## 1. 개요
 
@@ -18,17 +20,9 @@ SNS 서비스 Server REST API
 - 사용자 정보는 JWT토큰을 이용
 - 로그아웃은 프론트엔드에서 처리
 
-### Applied Technology
-
-- 사용언어 : `Javascript`
-- 런타임 환경 : `Node.js`
-- 프레임워크 : `Express`
-- 데이터베이스 : `Mysql`
-- ORM : `Sequelize`
-
 ### ERD
 
-TODO: dbdiagram.io
+<img width="100%" alt="1" src="https://user-images.githubusercontent.com/57665888/192920218-d0fbc6a6-b03b-4bf1-915a-3b9aabe8efb0.png">
 
 ### Directory Structure
 
@@ -61,6 +55,14 @@ SocialNetworkingService_API
 ├─ app.js
 └─ README.md
 ```
+
+### Applied Technology
+
+- 사용언어 : `Javascript`
+- 런타임 환경 : `Node.js`
+- 프레임워크 : `Express`
+- 데이터베이스 : `Mysql`
+- ORM : `Sequelize`
 
 ## 2. How To Use
 

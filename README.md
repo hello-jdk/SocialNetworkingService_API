@@ -10,8 +10,6 @@ Social Networking Service REST API Server
 2. [How To Use](#2-how-to-use)
 3. [Convention](#3-convention)
 
-`22.09.23 ~ 22.09.29`
-
 ## 1. 개요
 
 SNS 서비스 Server REST API

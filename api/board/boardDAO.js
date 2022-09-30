@@ -1,4 +1,5 @@
 const { boardModel, hashTagModel, sequelize } = require("../../models");
+const Op = require("sequelize").Op;
 const hashtagModel = require("../../models/hashtagModel");
 const { BadRequestError, ForbiddenError, BasicError } = require("../../modules/error");
 
@@ -192,7 +193,7 @@ async function update(board) {
     throw new Error("update 에러");
   }
 }
-async function findeAllByCreated(articleCnt, page) {
+async function findAllByCreated(articleCnt, page) {
   return await boardModel.findAll({
     order: [["createdAt", "DESC"]],
     offset: articleCnt * (page - 1),
@@ -209,11 +210,33 @@ async function findAllByViewCount(articleCnt, page) {
     raw: true,
   });
 }
-async function findeAllByLikeCount(articleCnt, page) {
+async function findAllByLikeCount(articleCnt, page) {
   return await boardModel.findAll({
     order: [["likeCount", "DESC"]],
     offset: articleCnt * (page - 1),
     limit: articleCnt,
+    raw: true,
+  });
+}
+
+async function findAllForSearch(search) {
+  return await boardModel.findAll({
+    where: {
+      title: {
+        [Op.like]: "%" + search + "%",
+      },
+    },
+    raw: true,
+  });
+}
+
+async function findAllForHashTag(hashtag) {
+  return await boardModel.findAll({
+    where: {
+      hashtag: {
+        [Op.like]: "#" + hashtag + ",",
+      },
+    },
     raw: true,
   });
 }
@@ -224,7 +247,9 @@ module.exports = {
   updateLike,
   destroy,
   update,
-  findeAllByCreated,
+  findAllByCreated,
   findAllByViewCount,
-  findeAllByLikeCount,
+  findAllByLikeCount,
+  findAllForSearch,
+  findAllForHashTag,
 };

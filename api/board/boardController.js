@@ -83,8 +83,6 @@ async function selectAll(req, res, next) {
   } catch (error) {
     next(error);
   }
-
-  console.log(orderby, articleCnt, page, search, hashtag);
 }
 
 module.exports = {

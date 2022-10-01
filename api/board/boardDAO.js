@@ -1,11 +1,6 @@
 const { boardModel, sequelize } = require("../../models");
 const Op = require("sequelize").Op;
-const {
-  BadRequestError,
-  ForbiddenError,
-  BasicError,
-  ConflictError,
-} = require("../../modules/error");
+const { BadRequestError, ForbiddenError, ConflictError } = require("../../modules/error");
 
 async function create(board) {
   const newBoard = await boardModel

@@ -1,6 +1,11 @@
 const { boardModel, sequelize } = require("../../models");
 const Op = require("sequelize").Op;
-const { BadRequestError, ForbiddenError, BasicError } = require("../../modules/error");
+const {
+  BadRequestError,
+  ForbiddenError,
+  BasicError,
+  ConflictError,
+} = require("../../modules/error");
 
 async function create(board) {
   const newBoard = await boardModel
@@ -18,107 +23,110 @@ async function create(board) {
 
 async function findOneById(id) {
   const t = await sequelize.transaction();
-  const boardExist = await boardModel.findByPk(id, { transaction: t });
-  if (!boardExist) {
-    throw new BadRequestError("게시글이 존재하지 않습니다.");
-  }
 
-  try {
-    const board = boardExist;
-    const viewCount = board.viewCount + 1;
-    await boardModel.update({ viewCount }, { where: { id }, transaction: t });
-    board.viewCount++;
-
-    t.commit();
-    const updatedBaord = board;
-    return updatedBaord;
-  } catch (error) {
-    t.rollback();
-    if (!error.isCustom) {
-      throw new Error("findOneById 에러");
+  const board = await boardModel.findByPk(id, { transaction: t }).then((obj) => {
+    if (!obj) {
+      throw new BadRequestError("게시글이 존재하지 않습니다.");
     }
-  }
+    return obj.get();
+  });
+
+  board.viewCount++;
+  await boardModel
+    .update({ viewCount: board.viewCount }, { where: { id }, transaction: t })
+    .catch(() => {
+      t.rollback();
+      throw new ConflictError("게시글 조회에 실패했습니다.");
+    });
+
+  const updatedBaord = board;
+  return updatedBaord;
 }
 
 async function updateLike(userId, boardId) {
   const t = await sequelize.transaction();
-  let boardExist = await boardModel.findByPk(boardId, { raw: true, transaction: t });
-  if (!boardExist) {
-    throw new BadRequestError("게시글이 존재하지 않습니다.");
-  }
 
-  try {
-    let board = boardExist;
-    let likeListString = board.likeUserId;
-    let likeListArr = [];
-    if (likeListString == null || likeListString == "") {
-      likeListString = "";
-    } else {
-      likeListArr = likeListString.split(",");
-    }
-    let likeFlag = true;
-
-    for (let i = 0; i < likeListArr.length; i++) {
-      if (likeListArr[i] == userId) {
-        likeListArr.splice(i, 1);
-        likeFlag = false;
-        board.likeCount = board.likeCount - 1;
-        break;
-      }
-    }
-
-    if (likeFlag) {
-      likeListArr.push(userId);
-      board.likeCount = board.likeCount + 1;
-    }
-
-    likeListString = likeListArr.toString();
-    board.likeUserId = likeListString;
-
-    await boardModel.update(board, {
-      where: { id: board.id },
+  let boardExist = await boardModel
+    .findByPk(boardId, {
+      raw: true,
       transaction: t,
+    })
+    .then((obj) => {
+      if (!obj) {
+        throw new BadRequestError("게시글이 존재하지 않습니다.");
+      }
+      return obj.get();
     });
 
-    t.commit();
-    return board;
-  } catch (error) {
-    t.rollback();
-    throw new Error("updateLike 에러");
+  //좋아요 전처리
+  let board = boardExist;
+  let likeListString = board.likeUserId;
+  let likeListArr = [];
+  if (likeListString == null || likeListString == "") {
+    likeListString = "";
+  } else {
+    likeListArr = likeListString.split(",");
   }
+  let likeFlag = true;
+
+  //좋아요 취소
+  for (let i = 0; i < likeListArr.length; i++) {
+    if (likeListArr[i] == userId) {
+      likeListArr.splice(i, 1);
+      likeFlag = false;
+      board.likeCount = board.likeCount - 1;
+      break;
+    }
+  }
+
+  //좋아요 등록
+  if (likeFlag) {
+    likeListArr.push(userId);
+    board.likeCount = board.likeCount + 1;
+  }
+  likeListString = likeListArr.toString();
+  board.likeUserId = likeListString;
+
+  await boardModel
+    .update(board, {
+      where: { id: board.id },
+      transaction: t,
+    })
+    .catch(() => {
+      t.rollback();
+      throw new ConflictError("좋아요 기능에 실패했습니다.");
+    });
+
+  return board;
 }
 
 async function destroy(boardId, userEmail) {
   const t = await sequelize.transaction();
 
-  let boardExist = await boardModel.findByPk(boardId, { raw: true });
-  if (!boardExist) {
-    throw new BadRequestError("게시글이 존재하지 않습니다.");
-  }
+  let board = await boardModel.findByPk(boardId, { raw: true }).then((obj) => {
+    if (!obj) {
+      throw new BadRequestError("게시글이 존재하지 않습니다.");
+    }
+    return obj.get();
+  });
 
-  const board = boardExist;
-  const boardAthor = board.userEmail;
-  if (boardAthor != userEmail) {
+  if (board.userEmail != userEmail) {
     throw new ForbiddenError("게시글은 본인만 지울수있습니다.");
   }
 
-  try {
-    ////게시글 제거
-    const deletedRowNum = await boardModel.destroy({
+  await boardModel
+    .destroy({
       where: { id: boardId },
       transaction: t,
+    })
+    .then((num) => {
+      if (num != 1) {
+        t.rollback();
+        throw new ConflictError("게시글 삭제 실패했습니다.");
+      }
     });
 
-    if (deletedRowNum != 1) {
-      throw new BasicError("board destroy", "게시글이 존재하고 본인이지만 지워지지 않음", 500);
-    }
-
-    t.commit();
-  } catch (error) {
-    console.log(error.message);
-    t.rollback();
-    throw new Error("destroy 에러");
-  }
+  t.commit();
 }
 
 async function update(board) {

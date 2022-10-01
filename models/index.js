@@ -1,12 +1,25 @@
 const Sequelize = require("sequelize");
-const { MYSQL } = require("../config");
+const { MYSQL, RDS } = require("../config");
 
-////MYSQL
-const sequelize = new Sequelize(MYSQL.DATABASE, MYSQL.USERNAME, MYSQL.PASSWORD, {
-  host: MYSQL.HOST,
-  dialect: MYSQL.DIALECT,
-  logging: true,
-});
+const DB = "local";
+let sequelize = {};
+
+if (DB == "local") {
+  ////MYSQL
+  sequelize = new Sequelize(MYSQL.DATABASE, MYSQL.USERNAME, MYSQL.PASSWORD, {
+    host: MYSQL.HOST,
+    dialect: MYSQL.DIALECT,
+    logging: true,
+  });
+} else {
+  ////RDS
+  sequelize = new Sequelize(RDS.DATABASE, RDS.USERNAME, RDS.PASSWORD, {
+    host: RDS.HOST,
+    port: RDS.PORT,
+    dialect: RDS.DIALECT,
+    logging: true,
+  });
+}
 
 //모델 정의
 const userModel = require("./userModel")(sequelize);

@@ -12,6 +12,15 @@ const MYSQL = {
   DIALECT: "mysql",
 };
 
+const RDS = {
+  HOST: process.env.RDS_HOST,
+  PORT: process.env.RDS_PORT,
+  DATABASE: process.env.RDS_DATABASE,
+  USERNAME: process.env.RDS_USERNAME,
+  PASSWORD: process.env.RDS_PASSWORD,
+  DIALECT: "mysql",
+};
+
 const JWT = {
   secretKey: process.env.JWT_SECRETKEY,
   option: {
@@ -23,4 +32,4 @@ const JWT = {
   TOKEN_INVALID: -2,
 };
 
-module.exports = { SERVER, MYSQL, JWT };
+module.exports = { SERVER, MYSQL, RDS, JWT };

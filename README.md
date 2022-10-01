@@ -20,7 +20,7 @@ SNS 서비스 Server REST API
 
 ### ERD
 
-<img width="100%" alt="1" src="https://user-images.githubusercontent.com/57665888/192920218-d0fbc6a6-b03b-4bf1-915a-3b9aabe8efb0.png">
+<img width="100%" alt="1" src="https://user-images.githubusercontent.com/57665888/193393307-aa49a361-51e2-4ed9-bebc-6881bf60ddda.png">
 
 ### Directory Structure
 
@@ -33,7 +33,6 @@ SocialNetworkingService_API
 ├─ models
 │  ├─ index.js
 │  ├─ boardModel.js
-│  ├─ hashtagModel.js
 │  └─ userModel.js
 ├─ api
 │  ├─ router.js

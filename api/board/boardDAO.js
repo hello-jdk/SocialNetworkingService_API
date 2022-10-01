@@ -1,47 +1,19 @@
-const { boardModel, hashTagModel, sequelize } = require("../../models");
+const { boardModel, sequelize } = require("../../models");
 const Op = require("sequelize").Op;
-const hashtagModel = require("../../models/hashtagModel");
 const { BadRequestError, ForbiddenError, BasicError } = require("../../modules/error");
 
 async function create(board) {
-  //트랜잭션
-  const t = await sequelize.transaction();
-  try {
-    //게시글 생성
-    const newBoard = await boardModel.create(board, { transaction: t });
+  const newBoard = await boardModel
+    .create(board)
+    .then((obj) => {
+      return obj.get();
+    })
+    .catch((error) => {
+      console.log(error);
+      throw new ConflictError("게시글 생성에 실패했습니다.");
+    });
 
-    //해시태그 생성 or 수정
-    const hashTagArr = board.hashTag.split(",");
-
-    for (let i = 0; i < hashTagArr.length; i++) {
-      const [row, created] = await hashTagModel.findOrCreate({
-        where: {
-          name: hashTagArr[i],
-        },
-        defaults: {
-          name: hashTagArr[i],
-          boardId: newBoard.id,
-        },
-        transaction: t,
-      });
-
-      //기존에 있다면 게시글 추가
-      if (!created) {
-        const hashTagId = row.id;
-        const hashTagboardId = row.boardId.concat(",", newBoard.id);
-
-        await hashTagModel.update(
-          { boardId: hashTagboardId },
-          { where: { id: hashTagId }, transaction: t }
-        );
-      }
-    }
-
-    t.commit();
-  } catch (error) {
-    t.rollback();
-    throw new Error("board create 에러");
-  }
+  return newBoard;
 }
 
 async function findOneById(id) {
@@ -131,43 +103,6 @@ async function destroy(boardId, userEmail) {
   }
 
   try {
-    ////해시태그 제거
-    //게시글에 있는 해시태그 데이터
-    const boardHashTagString = board.hashTag;
-    const boardHashTagArr = boardHashTagString.split(",");
-
-    //해시태그 이름으로 찾기
-    for (const hashTagName of boardHashTagArr) {
-      const hashTagRow = await hashTagModel.findOne({
-        where: { name: hashTagName },
-        transaction: t,
-        raw: true,
-      });
-
-      //해당 해시태그 데이터에서 게시글 제거
-      const hashTagboardIdString = hashTagRow.boardId;
-      const hashTagboardIdArr = hashTagboardIdString.split(",");
-
-      const updatedHashTagBaordId = await hashTagboardIdArr
-        .filter((targetId) => targetId != boardId)
-        .toString();
-
-      if (updatedHashTagBaordId == "") {
-        await hashTagModel.destroy({
-          where: { id: hashTagRow.id },
-          transaction: t,
-        });
-      } else {
-        await hashTagModel.update(
-          { boardId: updatedHashTagBaordId },
-          {
-            where: { id: hashTagRow.id },
-            transaction: t,
-          }
-        );
-      }
-    }
-
     ////게시글 제거
     const deletedRowNum = await boardModel.destroy({
       where: { id: boardId },

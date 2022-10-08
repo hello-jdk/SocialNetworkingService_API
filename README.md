@@ -2,8 +2,6 @@
 
 Social Networking Service REST API Server
 
-- [작업일지](https://physicsbackend.notion.site/5-421447b7293148e08283b64789fd5c55)
-
 ## 목차
 
 1. [개요](#1-개요)
